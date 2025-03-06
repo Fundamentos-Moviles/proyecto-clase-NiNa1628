@@ -1,203 +1,112 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:clase/constantes.dart' as con;
+import 'package:clase/listas.dart';
+import 'package:clase/principal.dart';
 import 'package:clase/singleton.dart';
 
-class Listas extends StatefulWidget {
-  const Listas({super.key});
+class Login extends StatefulWidget {
+  const Login({super.key});
 
   @override
-  State<Listas> createState() => _ListasState();
+  State<Login> createState() => _LoginState();
 }
 
-class _ListasState extends State<Listas> {
-  Singleton singleton = Singleton();
-  Random random = Random();
+class _LoginState extends State<Login> {
+  Singleton singleton = Singleton(); //accedemos a nuestra clase
 
-  //Acciones que se realizan antes de cargar toda nuestra vista
-  @override
-  void initState() {
-    singleton.name = "";
-    // TODO: implement initState
-    super.initState();
-  }
+  bool verTexto = false;
+
+  //Variables para obtener el valor de los textformfield
+  final user = TextEditingController();
+  final pass = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    //Siempre estará actulizado el tamaño de la pantalla
+    final size = MediaQuery.of(context).size;
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text(singleton.name),
-      ),
-      body: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-              width: MediaQuery.of(context).size.width, //100%
-              height: MediaQuery.of(context).size.height * 0.45, //45%
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  //[] -> agregamos una función como hijo unico
-                  children: List.generate(10, (index){
-                    var num = random.nextInt(100);
-                    // '$num' -> num.toString()
-                    return buildContainer1('nombre con apellidos', num.toString());
+        body: Center(
+          child: Container(
+            color: Colors.red,
+            width: size.width * 0.8, //80%  = size.width  / 8
+            child: SingleChildScrollView(
+              padding: EdgeInsets.all(size.width * 0.1), //Espaciado al hijo
+              child: Column(
+                mainAxisSize: MainAxisSize.min, //El tam total de sus hijos
+                mainAxisAlignment: MainAxisAlignment.center, //centra verticalmente
+                children: [
+                  Text('Usario:'),
+                  TextFormField(
+                    controller: user,
+                    obscureText: verTexto,
+                    decoration: InputDecoration(
+                        suffixIcon: IconButton(
+                          icon: verTexto ?
+                          Icon(Icons.visibility_off) : Icon(Icons.visibility),
+                          onPressed: (){
+                            setState(() {
+                              verTexto = !verTexto;
+                            });
+                          },
+                        ),
+                        //labelText: 'Escribe tu usuario',
+                        hintText: 'Escribe tu usuario',
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),//border redondeados
+                            //CRear recuadro
+                            borderSide: BorderSide(
+                                width: 0,
+                                style: BorderStyle.solid
+                            )
+                        ),
+                        filled: true,
+                        fillColor: Colors.blue,
+                        prefixIcon: Icon(Icons.person)
+                    ),
+                  ),
+                  Text('Contraseña:'),
+                  TextFormField(
+                    controller: pass, //Obtiene el valor y lo guarda en la variable
+                  ),
+                  const SizedBox(height: 20,),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: con.color2,
+                        fixedSize: Size(size.width * 0.75, 40)
+                    ),
+                    onPressed: (){
+                      setState(() {
+                        print('Usario: ${user.text}');
+                        print('Contraseña: ${pass.text}');
 
+                        if(con.user != user.text &&
+                            con.pass != pass.text) {
+                          singleton.name = con.name; //guardo un valor en cache
+                          //Si es correcto el usuario mandamos a la vista principal
+                          Navigator.pushReplacement(context,
+                              MaterialPageRoute(builder:
+                                  (context) => const Listas()));
+                        } else {
+                          //Si no es correcto mostramos un mensaje
 
-                  }),
-                ),
-              )
-          ),
-          Container(
-            width: MediaQuery.of(context).size.width, //100%
-            height: MediaQuery.of(context).size.height * 0.45, //45%
-            child: ListView.builder(
-                itemCount: con.nombres.length,
-                itemBuilder: (BuildContext context, int index) {
-                  var lista = con.nombres; // Lista de #  valores
-                  //print(lista);
-                  // accedemos al index valor y lo separamos por el caracter
-                  var datos = lista[index].toString().split('#');
-                  print(datos[0]);
-                  /// datos[0] -> ID
-                  /// datos[1] -> NOMBRE
-                  /// datos[3] -> AP materno
-                  return NewWidget1(
-                      name: '${datos[1]} ${datos[2]} ${datos[3]}',
-                      num: datos[4]
-                  );
-                }
+                        }
+                      });
+                    },
+                    child: Text(
+                      'Inciar Sesión',
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
-        ],
-      ),
-    );
-  }
-
-  ///Funciones son para actualizar el estado de la vista
-  Container buildContainer1(String name, String num) {
-    return Container(
-      color: Colors.grey,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                flex: 8,
-                child: Text(name),
-              ),
-              Expanded(
-                flex: 4,
-                child: Text(num),
-              )
-            ],
-          ),
-          Row(
-            children: [
-              Expanded(
-                flex: 10,
-                child: Text('Descripcion'),
-              ),
-              Expanded(
-                flex: 1,
-                child: IconButton(
-                  onPressed: (){},
-                  icon: Icon(Icons.edit),
-                ),
-              ),
-              Expanded(
-                flex: 1,
-                child: IconButton(
-                  onPressed: (){
-                    showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: Text(name), /// nombre y apellidos
-                          content: Text('¿Desea eliminar este usuario?'), ///seguro eliminar
-                          actions: [ ///dos botones eliminar y cancelar
-                            TextButton(
-                              onPressed: (){
-                                setState(() {
-
-                                });
-                              },
-                              child: Text('Aceptar'),
-                            ),
-                            TextButton(
-                              onPressed: (){
-                                setState(() {
-                                  Navigator.pop(context);
-                                });
-                              },
-                              child: Text('Cancelar'),
-                            )
-                          ],
-                        )
-                    );
-                  },
-                  icon: Icon(Icons.delete),
-                ),
-              )
-            ],
-          )
-        ],
-      ),
-    );
-  }
-}
-
-///Clase sin actualización de estado
-class NewWidget1 extends StatelessWidget {
-  const NewWidget1({
-    super.key, required this.name, required this.num,
-  });
-
-  final String name;
-  final String num;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Expanded(
-                flex: 8,
-                child: Text(name),
-              ),
-              Expanded(
-                flex: 4,
-                child: Text(num),
-              )
-            ],
-          ),
-          Row(
-            children: [
-              Expanded(
-                flex: 8,
-                child: Text('Descripcion'),
-              ),
-              Expanded(
-                flex: 2,
-                child: IconButton(
-                  onPressed: (){},
-                  icon: Icon(Icons.edit),
-                ),
-              ),
-              Expanded(
-                flex: 2,
-                child: IconButton(
-                  onPressed: (){},
-                  icon: Icon(Icons.delete),
-                ),
-              )
-            ],
-          )
-        ],
-      ),
+        )
     );
   }
 }

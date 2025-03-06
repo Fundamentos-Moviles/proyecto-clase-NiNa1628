@@ -1,6 +1,7 @@
+import 'package:clase/dependencia.dart';
 import 'package:flutter/material.dart';
-import 'package:untitled/login.dart';
-import 'package:untitled/principal.dart';
+import 'package:clase/login.dart';
+import 'package:clase/principal.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const Login(),
+      home: const Dependencias(),
     );
   }
 }

@@ -1,112 +1,154 @@
 import 'package:flutter/material.dart';
-import 'package:clase/constantes.dart' as con;
-import 'package:clase/listas.dart';
-import 'package:clase/principal.dart';
-import 'package:clase/singleton.dart';
 
-class Login extends StatefulWidget {
-  const Login({super.key});
+//StatefulWidget: Clase con cambios de estado
+class Principal extends StatefulWidget {
+  const Principal({super.key});
 
   @override
-  State<Login> createState() => _LoginState();
+  State<Principal> createState() => _PrincipalState();
 }
 
-class _LoginState extends State<Login> {
-  Singleton singleton = Singleton(); //accedemos a nuestra clase
+class _PrincipalState extends State<Principal> {
+  // Crear sus variables
+  bool c1 = false;
 
-  bool verTexto = false;
-
-  //Variables para obtener el valor de los textformfield
-  final user = TextEditingController();
-  final pass = TextEditingController();
-
+  // Fin del espacio para las variables
   @override
   Widget build(BuildContext context) {
-    //Siempre estará actulizado el tamaño de la pantalla
-    final size = MediaQuery.of(context).size;
-
+    //Scaffold: Dimenciones actuales de nuestra vista
     return Scaffold(
-        body: Center(
-          child: Container(
-            color: Colors.red,
-            width: size.width * 0.8, //80%  = size.width  / 8
-            child: SingleChildScrollView(
-              padding: EdgeInsets.all(size.width * 0.1), //Espaciado al hijo
-              child: Column(
-                mainAxisSize: MainAxisSize.min, //El tam total de sus hijos
-                mainAxisAlignment: MainAxisAlignment.center, //centra verticalmente
-                children: [
-                  Text('Usario:'),
-                  TextFormField(
-                    controller: user,
-                    obscureText: verTexto,
-                    decoration: InputDecoration(
-                        suffixIcon: IconButton(
-                          icon: verTexto ?
-                          Icon(Icons.visibility_off) : Icon(Icons.visibility),
-                          onPressed: (){
-                            setState(() {
-                              verTexto = !verTexto;
-                            });
-                          },
-                        ),
-                        //labelText: 'Escribe tu usuario',
-                        hintText: 'Escribe tu usuario',
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),//border redondeados
-                            //CRear recuadro
-                            borderSide: BorderSide(
-                                width: 0,
-                                style: BorderStyle.solid
-                            )
-                        ),
-                        filled: true,
-                        fillColor: Colors.blue,
-                        prefixIcon: Icon(Icons.person)
-                    ),
+        appBar: AppBar(), //Barra superior
+        body: Column(
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  flex: 8,
+                  child: Container(
+                    //Atributos
+                    width: MediaQuery.of(context).size.width / 3, /// 100%
+                    /// MediaQuery.of(context).size.width / 2 -> 50%
+                    height: 100,
+                    color: Colors.blueAccent,
                   ),
-                  Text('Contraseña:'),
-                  TextFormField(
-                    controller: pass, //Obtiene el valor y lo guarda en la variable
+                ),
+                Expanded(
+                  flex: 2,
+                  child: Container(
+                    //Atributos
+                    width: MediaQuery.of(context).size.width / 3, /// 100%
+                    /// MediaQuery.of(context).size.width / 2 -> 50%
+                    height: 100,
+                    color: Colors.red,
                   ),
-                  const SizedBox(height: 20,),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: con.color2,
-                        fixedSize: Size(size.width * 0.75, 40)
-                    ),
-                    onPressed: (){
-                      setState(() {
-                        print('Usario: ${user.text}');
-                        print('Contraseña: ${pass.text}');
-
-                        if(con.user != user.text &&
-                            con.pass != pass.text) {
-                          singleton.name = con.name; //guardo un valor en cache
-                          //Si es correcto el usuario mandamos a la vista principal
-                          Navigator.pushReplacement(context,
-                              MaterialPageRoute(builder:
-                                  (context) => const Listas()));
-                        } else {
-                          //Si no es correcto mostramos un mensaje
-
-                        }
+                ),
+                Expanded(
+                  flex: 2,
+                  child: Container(
+                    //Atributos
+                    width: MediaQuery.of(context).size.width / 3, /// 100%
+                    /// MediaQuery.of(context).size.width / 2 -> 50%
+                    height: 100,
+                    color: Colors.green,
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Expanded(
+                  flex: 8,
+                  ///Le da acción de un btn a cualquier widget
+                  child: InkWell(
+                    onTap: () {
+                      setState(() { // Actualizar el estado de la vista
+                        //(){} -> función interna
+                        //Realizar la acción de cambio de color al contenedor hijo
+                        c1 = !c1;
+                        //c1 = c1 ? false : true;
                       });
                     },
-                    child: Text(
-                      'Inciar Sesión',
-                      style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold
+                    child: Container(
+                      //Atributos
+                      width: MediaQuery.of(context).size.width / 3, /// 100%
+                      /// MediaQuery.of(context).size.width / 2 -> 50%
+                      height: 100,
+                      color: c1 ? Colors.red : Colors.yellow,
+                      child: Text(
+                        'Color Rojo',
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold
+                        ),
                       ),
                     ),
-                  )
-                ],
-              ),
+                  ),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: Container(
+                    //Atributos
+                    width: MediaQuery.of(context).size.width / 3, /// 100%
+                    /// MediaQuery.of(context).size.width / 2 -> 50%
+                    height: 100,
+                    color: Colors.blueGrey,
+                  ),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: Container(
+                    //Atributos
+                    width: MediaQuery.of(context).size.width / 3, /// 100%
+                    /// MediaQuery.of(context).size.width / 2 -> 50%
+                    height: 100,
+                    color: Colors.green,
+                  ),
+                ),
+              ],
             ),
-          ),
+            Row(
+              children: [
+                Expanded(
+                  flex: 8,
+                  child: Container(
+                    //Atributos
+                    width: MediaQuery.of(context).size.width / 3, /// 100%
+                    /// MediaQuery.of(context).size.width / 2 -> 50%
+                    height: 100,
+                    color: Colors.blueAccent,
+                  ),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: Container(
+                    //Atributos
+                    width: MediaQuery.of(context).size.width / 3, /// 100%
+                    /// MediaQuery.of(context).size.width / 2 -> 50%
+                    height: 100,
+                    color: Colors.red,
+                  ),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: Container(
+                    //Atributos
+                    width: MediaQuery.of(context).size.width / 3, /// 100%
+                    /// MediaQuery.of(context).size.width / 2 -> 50%
+                    height: 100,
+                    color: Colors.green,
+                  ),
+                ),
+              ],
+            )
+          ],
         )
+
+      /*Stack( //Sobreponer varios widgets entre si
+        children: [
+
+        ],
+      ),*/ //Cuerpo de la app
     );
   }
 }
