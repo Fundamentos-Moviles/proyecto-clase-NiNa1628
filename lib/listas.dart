@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:clase/constantes.dart' as con;
 import 'package:clase/singleton.dart';
+import 'package:clase/editar.dart';
 
 class Listas extends StatefulWidget {
   const Listas({super.key});
@@ -19,6 +20,7 @@ class _ListasState extends State<Listas> {
   @override
   void initState() {
     singleton.name = "";
+    singleton.nuevaLista = con.dameLista();
     // TODO: implement initState
     super.initState();
   }
@@ -39,10 +41,11 @@ class _ListasState extends State<Listas> {
                 padding: const EdgeInsets.all(20),
                 child: Column(
                   //[] -> agregamos una función como hijo unico
-                  children: List.generate(10, (index){
-                    var num = random.nextInt(100);
+                  children: List.generate(singleton.nuevaLista.length, (index){
+
+                    var datos = singleton.nuevaLista[index].toString().split('#');
                     // '$num' -> num.toString()
-                    return buildContainer1('nombre con apellidos', num.toString());
+                    return buildContainer1(datos[1], datos[4], int.parse(datos[0]));
 
 
                   }),
@@ -76,7 +79,7 @@ class _ListasState extends State<Listas> {
   }
 
   ///Funciones son para actualizar el estado de la vista
-  Container buildContainer1(String name, String num) {
+  Container buildContainer1(String name, String num, int id) {
     return Container(
       color: Colors.grey,
       child: Column(
@@ -103,7 +106,21 @@ class _ListasState extends State<Listas> {
               Expanded(
                 flex: 1,
                 child: IconButton(
-                  onPressed: (){},
+                  onPressed: (){
+                    setState(() {
+                      singleton.id_editar = id;
+                      //alert
+
+                      var registro = singleton.nuevaLista[id].toString().split('#');
+                      // registro[0]
+
+                      // Pasar los valores a los textformfield
+                      nombre.text = registro[1];
+
+                      Navigator.push(context, MaterialPageRoute(
+                          builder: (context) => const Editar()));
+                    });
+                  },
                   icon: Icon(Icons.edit),
                 ),
               ),
@@ -120,7 +137,8 @@ class _ListasState extends State<Listas> {
                             TextButton(
                               onPressed: (){
                                 setState(() {
-
+                                  singleton.nuevaLista.removeAt(id); // id
+                                  // singleton.nuevaLista.remove(singleton.nuevaLista[id]); // registro
                                 });
                               },
                               child: Text('Aceptar'),
